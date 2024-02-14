@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator custom_generator {
+  provider = "prisma-generator-fake-data"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AuthenticationType {
+  CREDENTIALS
+  GOOGLE
+}
+
+enum UserRole {
+  GUEST
+  USER
+  UPLOADER
+  ADMIN
+}
+
+model Key {
+  id           String   @id @default(uuid())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String   @unique @map("user_id")
+  primaryKey   String   @map("primary_key")
+  secondaryKey String   @map("secondary_key")
+  status       Boolean  @default(true)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("keys")
+}
+
+model Role {
+  id        String   @id @default(uuid()) @map("id")
+  role      String
+  status    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  users     User[]
+
+  @@unique([role])
+  @@map("roles")
+}
+
+model User {
+  id                 String            @id @default(uuid())
+  firstName          String            @map("first_name")
+  lastName           String?           @map("last_name")
+  email              String            @unique
+  emailVerified      Boolean           @default(false) @map("email_verified")
+  avatar             String?           @map("profile_image")
+  coverImage         String?           @map("cover_image")
+  genre              Genre?            @relation(fields: [genreId], references: [id])
+  genreId            String?           
+  password           String?
+  country            String?
+  language          String?           
+  key                Key?
+  role               Role              @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId             String            @map("role_id")
+  subscriptionPlan   SubscriptionPlan? @relation(fields: [subscriptionPlanId], references: [id])
+  subscriptionPlanId String?           @map("subscription_plan_id")
+  subscriptionStatus String?           @map("subscription_status")
+  podcasts           Podcast[]
+  listenHistory      ListenHistory[]
+  settings      EmailSeeting?
+
+  @@map("users")
+}
+
+model Genre {
+  id        String    @id @default(uuid())
+  slug      String   @unique 
+  genreName String    @map("genre_name")
+  genreImage String @map("genre_image")
+  podcasts  Podcast[]
+  creators  User[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  @@map("genres")
+}
+
+model Podcast {
+  id            String          @id @default(uuid())
+  title         String
+  description   String
+  thumbnail     String
+  audio         String
+  language      String          @default("english")
+  isPremium     Boolean         @default(false)
+  genre         Genre           @relation(fields: [genreId], references: [id])
+  genreId       String          @map("genre_id")
+  author        User            @relation(fields: [authorId], references: [id])
+  authorId      String          @map("author_id")
+  royaltyAmount Float?           @default(0)
+  views         ListenHistory[]
+
+  @@map("podcasts")
+}
+
+model ListenHistory {
+  id        String   @id @default(uuid())
+  podcast   Podcast  @relation(fields: [podcastId], references: [id])
+  podcastId String   @map("podcast_id")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("user_id")
+  viewedAt  DateTime @default(now()) @map("viewed_at")
+  @@map("listen_history")
+}
+
+model SubscriptionPlan {
+  id         String @id @default(uuid())
+  plan       String
+  price      Float
+  duration   Int
+  subscriber User[]
+  @@map("subscription_plans")
+}
+
+
+model EmailSeeting {
+  id String  @id @map("setting_id")@default(uuid())
+  promotionalEmail Boolean @default(true)
+  securityEmail Boolean @default(true)
+  user    User @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @unique
+  
+  @@map("email_settings")
+}
