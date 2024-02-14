@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "nodemon ./src/server.js",
-    "postinstall": "prisma generate",
+    "preinstall": "prisma generate",
     "production": "node ./src/server.js",
     "dev": "nodemon ./src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
