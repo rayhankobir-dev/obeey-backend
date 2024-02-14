@@ -8,6 +8,12 @@ const app = express();
 app.use(express.json());
 app.use(cors({ origin: corsUrl, optionsSuccessStatus: 200 }));
 app.use("/api/v1", router);
+app.get("/", (req, res) => {
+  res.json({
+    name: "Obeey Backend",
+    author: "obeey.com",
+  });
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => next(new NotFoundError()));

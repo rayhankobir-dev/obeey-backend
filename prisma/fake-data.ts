@@ -134,8 +134,8 @@ export function fakeSubscriptionPlanComplete() {
 export function fakeEmailSeetingComplete() {
   return {
     id: faker.string.uuid(),
-    promotion_email: true,
-    security_email: true,
+    promotionalEmail: true,
+    securityEmail: true,
     userId: faker.string.uuid(),
   };
 }
