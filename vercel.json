@@ -6,7 +6,7 @@
             "use": "@vercel/static"
         },
         {
-            "src": "src/server.js",
+            "src": "src/(*)",
             "use": "@vercel/node"
         }
     ],
@@ -14,12 +14,6 @@
         {
             "src": "/(.*)",
             "dest": "/"
-        }
-    ],
-    "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/"
         }
     ]
 }
