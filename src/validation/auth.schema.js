@@ -23,6 +23,7 @@ const authSchema = {
     password: Joi.string().required().min(6),
     role: Joi.string().default("USER").valid("USER", "ADMIN", "CREATOR"),
   }),
+
   otp: Joi.object().keys({
     otp: Joi.string()
       .length(4)
