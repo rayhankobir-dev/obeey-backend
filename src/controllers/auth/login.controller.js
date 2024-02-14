@@ -16,6 +16,7 @@ export const loginController = asyncHandler(async (req, res) => {
         select: { id: true, role: true },
       },
       key: true,
+      settings: true,
     },
   });
 

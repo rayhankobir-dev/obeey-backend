@@ -9,6 +9,7 @@ export const ValidationSource = {
   HEADER: "headers",
   QUERY: "query",
   PARAM: "params",
+  FILE: "files",
 };
 
 // url endpoint validation

@@ -55,6 +55,7 @@ model User {
   firstName          String            @map("first_name")
   lastName           String?           @map("last_name")
   email              String            @unique
+  gender             String?
   emailVerified      Boolean           @default(false) @map("email_verified")
   avatar             String?           @map("profile_image")
   coverImage         String?           @map("cover_image")

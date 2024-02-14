@@ -1,33 +1,65 @@
 import { Router } from "express";
 import { validation } from "../middleware/validator.middleware.js";
-import authSchema from "../validation/auth.schema.js";
-import { loginController } from "../controllers/auth/login.controller.js";
-import signUpController from "../controllers/auth/signup.controller.js";
-import logoutController from "../controllers/auth/logout.controller.js";
 import authentication from "../middleware/authentication.middleware.js";
-import { ValidationSource } from "../helpers/validator.js";
-import tokenController from "../controllers/auth/token.controller.js";
-import otpController from "../controllers/auth/otp.controller.js";
+import {
+  changePassSchema,
+  emailSettingSchema,
+  personalInfoSchema,
+  profileImageSchema,
+} from "../validation/profile.schema.js";
+import {
+  changePassController,
+  editAvatar,
+  editCover,
+  updatePersonalInfo,
+  updateSettingController,
+  getUserProfile,
+} from "../controllers/profile/user.controller.js";
+import { upload, validateFiles } from "../middleware/multer.middleware.js";
 
-const authRouter = new Router();
+const profileRouter = new Router();
 
 // profile routes
-authRouter.post(
+profileRouter.get("/", authentication, getUserProfile);
+profileRouter.put(
   "/change-password",
-  validation(authSchema.otp),
+  validation(changePassSchema),
   authentication,
-  otpController.verifyOtp
+  changePassController
 );
-authRouter.post(
-  "/refresh-token",
-  validation(authSchema.refreshToken, ValidationSource.BODY),
-  tokenController
-);
-authRouter.delete(
-  "/logout",
-  validation(authSchema.auth, ValidationSource.HEADER),
+profileRouter.put(
+  "/email-setting",
+  validation(emailSettingSchema),
   authentication,
-  logoutController
+  updateSettingController
+);
+profileRouter.put(
+  "/update",
+  validation(personalInfoSchema),
+  authentication,
+  updatePersonalInfo
 );
 
-export default authRouter;
+profileRouter.put(
+  "/update-avatar",
+  upload({ avatar: [".jpg", ".png", ".jpeg"] }).fields([
+    { name: "avatar", maxCount: 1 },
+  ]),
+  validateFiles,
+  validation(profileImageSchema.avatar),
+  authentication,
+  editAvatar
+);
+
+profileRouter.put(
+  "/update-cover",
+  upload({ coverImage: [".jpg", ".png", ".jpeg"] }).fields([
+    { name: "coverImage", maxCount: 1 },
+  ]),
+  validateFiles,
+  validation(profileImageSchema.cover),
+  authentication,
+  editCover
+);
+
+export default profileRouter;
