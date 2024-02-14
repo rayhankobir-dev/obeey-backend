@@ -8,8 +8,8 @@
     "node": "18.x"
   },
   "scripts": {
-    "start": "SET \"NODE_ENV=development\" && nodemon index",
-    "production": "SET \"NODE_ENV=production\" && nodemon index",
+    "start": "SET \"NODE_ENV=development\" && nodemon ./src/server.js",
+    "production": "SET \"NODE_ENV=production\" && nodemon ./src/server.js",
     "dev": "nodemon ./src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
