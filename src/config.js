@@ -13,6 +13,7 @@ export const db = {
   port: process.env.DB_PORT || "",
   user: process.env.DB_USER || "",
   password: process.env.DB_USER_PASSWORD || "",
+  dbUrl: process.env.DATABASE_URL || "",
 };
 
 // cors policy configuration
@@ -31,7 +32,7 @@ const logDirectory = process.env.LOG_DIRECTORY;
 
 // redis configuration variables
 export const redisConfig = {
-  url: process.env.REDIS_URL || {
+    url: process.env.REDIS_URL || {
     host: process.env.REDIS_HOST || "localhost",
     port: process.env.REDIS_PORT || 6379,
     user: process.env.REDIS_USER || "default",
