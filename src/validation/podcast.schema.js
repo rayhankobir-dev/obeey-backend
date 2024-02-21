@@ -9,6 +9,10 @@ export const findByGenreSchema = Joi.object({
   slug: Joi.string().required(),
 });
 
+export const findByAuthorSchema = Joi.object({
+  author: Joi.string().required(),
+});
+
 export const audioSchema = Joi.object({
   fieldname: Joi.string().required(),
   originalname: Joi.string().required(),
@@ -27,7 +31,7 @@ export const imageSchema = Joi.object({
   originalname: Joi.string().required(),
   encoding: Joi.string(),
   mimetype: Joi.string()
-    .valid("image/jpeg", "image/png", "image/gif")
+    .valid("image/jpeg", "image/png", "image/gif", "image/webp")
     .required(),
   destination: Joi.string().required(),
   filename: Joi.string().required(),

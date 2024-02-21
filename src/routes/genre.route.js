@@ -16,6 +16,6 @@ genreRouter.post(
   validation(genreSchema, ValidationSource.BODY),
   createGenreController
 );
-genreRouter.get("/", authentication, getGenreController);
+genreRouter.get("/", getGenreController);
 
 export default genreRouter;

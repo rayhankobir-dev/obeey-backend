@@ -11,6 +11,18 @@ export const editEmailSetting = async (id, setting) => {
       data: {
         ...setting,
       },
+      include: {
+        user: {
+          include: {
+            role: {
+              select: { id: true, role: true },
+            },
+            genre: true,
+            settings: true,
+            subscriptionPlan: true,
+          },
+        },
+      },
     });
     return updatedUser;
   } catch (error) {
@@ -42,11 +54,7 @@ export const editPersonalInfo = async (id, userData) => {
     return await prismaClient.user.update({
       where: { id },
       data: {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        gender: userData.gender,
-        language: userData.language,
-        country: userData.country,
+        ...userData,
       },
       include: {
         role: {
@@ -74,6 +82,9 @@ export const updateCover = async (id, coverImage) => {
         role: {
           select: { id: true, role: true },
         },
+        genre: true,
+        settings: true,
+        subscriptionPlan: true,
       },
     });
   } catch (error) {
@@ -92,6 +103,9 @@ export const updateAvatar = async (id, avatar) => {
         role: {
           select: { id: true, role: true },
         },
+        genre: true,
+        settings: true,
+        subscriptionPlan: true,
       },
     });
   } catch (error) {

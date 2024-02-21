@@ -13,20 +13,27 @@ const tokenController = asyncHandler(async (req, res) => {
 
   const user = await prismaClient.user.findFirst({
     where: { id: refreshTokenPayload.sub },
+    include: {
+      role: {
+        select: { id: true, role: true },
+      },
+      key: true,
+      settings: true,
+    },
   });
   if (!user) throw new AuthFailureError("User not registered");
   req.user = user;
 
-  const key = await prismaClient.key.findUnique({
-    where: {
-      userId: refreshTokenPayload.sub,
-      secondaryKey: refreshTokenPayload.prm,
-    },
-  });
+  // const key = await prismaClient.key.findUnique({
+  //   where: {
+  //     userId: refreshTokenPayload.sub,
+  //     secondaryKey: refreshTokenPayload.prm,
+  //   },
+  // });
 
   // check token key are valid
-  if (!key) throw new AuthFailureError("Invalid access token");
-  await prismaClient.key.delete({ where: { id: key.id } });
+  // if (!key) throw new AuthFailureError("Invalid access token!!");
+  await prismaClient.key.delete({ where: { userId: refreshTokenPayload.sub } });
 
   // create new tokens key
   const acceessTokenKey = crypto.randomBytes(64).toString("hex");
@@ -45,6 +52,7 @@ const tokenController = asyncHandler(async (req, res) => {
   const tokens = await createTokens(req.user, acceessTokenKey, refreshTokenKey);
 
   new TokenRefreshResponse("Token issued", {
+    user,
     ...tokens,
   }).send(res);
 });

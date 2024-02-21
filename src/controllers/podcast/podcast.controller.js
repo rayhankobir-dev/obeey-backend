@@ -8,6 +8,7 @@ import {
   podcastsByAuthor,
   podcastsByGenre,
   updatePodcast,
+  madeForYou,
 } from "../../services/podcast.service.js";
 import { uploadToCloudinary } from "../../utils/cloudinary.js";
 
@@ -71,6 +72,13 @@ export const getPodcastsByGenre = asyncHandler(async (req, res) => {
 export const getPodcastsByAuthor = asyncHandler(async (req, res) => {
   const { author } = req.params;
   const podcasts = await podcastsByAuthor(author);
+  new SuccessResponse("Success", {
+    podcasts,
+  }).send(res);
+});
+
+export const getMadeForYou = asyncHandler(async (req, res) => {
+  const podcasts = await madeForYou(req.user.id);
   new SuccessResponse("Success", {
     podcasts,
   }).send(res);

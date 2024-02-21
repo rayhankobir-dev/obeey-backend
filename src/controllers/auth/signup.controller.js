@@ -48,8 +48,8 @@ const signupUser = async ({ firstName, lastName, email, password, role }) => {
         },
         settings: {
           create: {
-            promotion_email: true,
-            security_email: true,
+            promotionalEmail: true,
+            securityEmail: true,
           },
         },
       },

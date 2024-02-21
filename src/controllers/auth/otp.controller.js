@@ -7,31 +7,60 @@ import redisClient from "../../utils/redis.js";
 import bcrypt from "bcrypt";
 import { otpConfig } from "../../config.js";
 import { BadRequestError } from "../../core/ApiError.js";
+import prismaClient from "../../model/index.js";
+import { exclude } from "../../helpers/utils.js";
 
 const otpController = {
   sendOtp: asyncHandler(async (req, res) => {
     const otp = generateOtp();
     const key = req.user.id + "otp";
+    console.log("Key:", key);
+    console.log("otp", otp);
+
     const hasedOtp = await bcrypt.hashSync(otp, 5);
+    console.log("hasedOtp", hasedOtp);
     await redisClient.set(key, hasedOtp, "EX", otpConfig.otpValidity);
-    await sendEmail(
-      "rayhankobir793@gmail.com",
+    sendEmail(
+      req.user.email,
       "Your Verification Code - Obeey",
       verificationTemplate(otp, req.user.firstName)
     );
-    new SuccessResponse("Verification code has been sent on your email").send(
-      res
-    );
+    new SuccessResponse("Verification email has been sent.").send(res);
   }),
+
   verifyOtp: asyncHandler(async (req, res) => {
-    const key = req.user.id + "otp";
+    const { id } = req.user;
+    const key = id + "otp";
+    console.log("Key:", key);
     const { otp } = req.body;
+    console.log("otp", otp);
     const fetchedOtp = await redisClient.get(key);
+    console.log("fetchedOtp", fetchedOtp);
     redisClient.del(key);
 
     const isVerified = await bcrypt.compareSync(otp, String(fetchedOtp));
+    console.log(isVerified);
+    const user = prismaClient.user.update({
+      where: {
+        id,
+      },
+      data: {
+        emailVerified: true,
+      },
+      include: {
+        role: {
+          select: { id: true, role: true },
+        },
+        genre: true,
+        settings: true,
+        subscriptionPlan: true,
+      },
+    });
     if (!isVerified) throw new BadRequestError("Invalid verification code");
-    new SuccessResponse("Verification successful").send(res);
+    new SuccessResponse(
+      "Verification successful",
+      await exclude(user, ["password"])
+    ).send(res);
   }),
 };
 

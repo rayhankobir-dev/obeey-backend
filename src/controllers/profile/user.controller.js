@@ -38,17 +38,18 @@ export const changePassController = asyncHandler(async (req, res) => {
 });
 
 export const updateSettingController = asyncHandler(async (req, res) => {
-  await editEmailSetting(req.user.id, req.body);
-  new SuccessResponse("Email settings are updated").send(res);
+  const user = await editEmailSetting(req.user.id, req.body);
+  new SuccessResponse("Email settings are updated", user).send(res);
 });
 
 export const updatePersonalInfo = asyncHandler(async (req, res) => {
-  const { firstName, lastName, gender, country, language } = req.body;
+  const { firstName, lastName, gender, genreId, country, language } = req.body;
 
   const updateFields = {};
   if (firstName) updateFields.firstName = firstName;
   if (lastName) updateFields.lastName = lastName;
   if (gender) updateFields.gender = gender;
+  if (genreId) updateFields.genreId = genreId;
   if (country) updateFields.country = country;
   if (language) updateFields.language = language;
 

@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { mailConfig } from "../../config.js";
+import { BadRequestError } from "../../core/ApiError.js";
 
 // create a transporter object using SMTP transport
 const transporter = nodemailer.createTransport({
@@ -23,8 +24,8 @@ export async function sendEmail(recipient, subject, body) {
 
     // send email
     let info = await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully");
+    console.log(info);
   } catch (error) {
-    console.error("Error occurred to send email:", error);
+    throw new BadRequestError("Email is not valid your account is restrict");
   }
 }

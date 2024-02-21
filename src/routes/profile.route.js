@@ -42,7 +42,7 @@ profileRouter.put(
 
 profileRouter.put(
   "/update-avatar",
-  upload({ avatar: [".jpg", ".png", ".jpeg"] }).fields([
+  upload({ avatar: [".jpg", ".png", ".jpeg", ".webp"] }).fields([
     { name: "avatar", maxCount: 1 },
   ]),
   validateFiles,
@@ -53,7 +53,7 @@ profileRouter.put(
 
 profileRouter.put(
   "/update-cover",
-  upload({ coverImage: [".jpg", ".png", ".jpeg"] }).fields([
+  upload({ coverImage: [".jpg", ".png", ".jpeg", ".webp"] }).fields([
     { name: "coverImage", maxCount: 1 },
   ]),
   validateFiles,

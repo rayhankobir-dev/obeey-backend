@@ -14,6 +14,7 @@ export const emailSettingSchema = Joi.object().keys({
 export const personalInfoSchema = Joi.object().keys({
   firstName: Joi.string().required(),
   lastName: Joi.string().allow(null).optional(),
+  genreId: Joi.string().optional(),
   gender: Joi.string().optional(),
   country: Joi.string().allow(null).optional(),
   language: Joi.string().allow(null).optional(),

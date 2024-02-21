@@ -1,5 +1,9 @@
 import prismaClient from "../model/index.js";
-import { InternalError, NotFoundError } from "../core/ApiError.js";
+import {
+  AuthFailureError,
+  InternalError,
+  NotFoundError,
+} from "../core/ApiError.js";
 
 // Create a new podcast
 export const createPodcast = async (authorId, data) => {
@@ -71,8 +75,9 @@ export const podcastsByAuthor = async (authorId) => {
     const podcasts = await prismaClient.podcast.findMany({
       where: { authorId },
     });
+    return podcasts;
   } catch (error) {
-    console.error("Error getting podcasts by author:", error);
+    throw error;
   }
 };
 
@@ -94,6 +99,36 @@ export const podcastsByGenre = async (slug) => {
         },
       },
     });
+    return podcasts;
+  } catch (error) {
+    console.error("Error getting podcasts by genre:", error);
+  }
+};
+
+// Get podcasts by genre
+export const madeForYou = async (id) => {
+  console.log(id);
+  try {
+    const user = await prismaClient.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      throw new AuthFailureError(`User with id ${userId} not found`);
+    }
+
+    const podcasts = await prismaClient.podcast.findMany({
+      where: {
+        OR: [{ language: user.language }],
+      },
+      orderBy: {
+        title: "desc",
+      },
+      take: 8,
+    });
+
     return podcasts;
   } catch (error) {
     console.error("Error getting podcasts by genre:", error);
