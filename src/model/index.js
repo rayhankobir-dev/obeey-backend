@@ -1,4 +1,4 @@
 import { PrismaClient } from "@prisma/client";
 
-const prismaClient = new PrismaClient(process.env.DATABASE_URL);
+const prismaClient = new PrismaClient();
 export default prismaClient;
